@@ -16,7 +16,6 @@ public class RoundRobin extends Scheduler {
         readyQueue = new LinkedList<ProcessControlBlock>();
         waitQueue = new LinkedList<ProcessControlBlock>();
         terminated = new LinkedList<ProcessControlBlock>();
-        int quantum = 5;
     }
 
     @Override
