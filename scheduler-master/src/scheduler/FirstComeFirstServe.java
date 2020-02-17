@@ -1,6 +1,5 @@
 package scheduler;
 
-import sun.jvm.hotspot.ui.ProcessListPanel;
 
 import java.util.Iterator;
 import java.util.LinkedList;
