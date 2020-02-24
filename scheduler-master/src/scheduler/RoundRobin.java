@@ -3,20 +3,20 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 
-
 public class RoundRobin extends Scheduler {
 
     private LinkedList<ProcessControlBlock> readyQueue;
     private LinkedList<ProcessControlBlock> waitQueue;
     private LinkedList<ProcessControlBlock> terminated;
+    private int quantum;       //How long before the next context switch
 
     //default constructor
-    public RoundRobin(int contextSwitchTime) {
+    public RoundRobin(int contextSwitchTime, int quantum) {
         super(contextSwitchTime);
         readyQueue = new LinkedList<ProcessControlBlock>();
         waitQueue = new LinkedList<ProcessControlBlock>();
         terminated = new LinkedList<ProcessControlBlock>();
-        int quantum = 5;
+        this.quantum = quantum;
     }
 
     @Override
@@ -28,25 +28,39 @@ public class RoundRobin extends Scheduler {
     }
 
 
-
-
     @Override
     public ProcessControlBlock next() {
+        for(ProcessControlBlock pcb : waitQueue) {
+            if(pcb.state().equals(ProcessControlBlock.READY)) {
+                readyQueue.add(pcb);
+                waitQueue.remove(pcb);
+            }
+        }
+        if(! readyQueue.isEmpty()) return readyQueue.remove();
         return null;
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
-    }
+    public boolean isEmpty() {return readyQueue.isEmpty() && waitQueue.isEmpty();}
 
     @Override
     public void execute(ProcessControlBlock pcb) {
+        if(pcb.state().equals(ProcessControlBlock.READY)) {
+            pcb.execute(quantum, clock);
 
+
+            if(pcb.state().equals(ProcessControlBlock.READY)) {
+                pcb.state().equals(ProcessControlBlock.WAITING); //Move process to WAITING to process next in READY
+                tick();
+            }
+        }
     }
 
     @Override
     public Iterator<ProcessControlBlock> iterator() {
-        return null;
+        LinkedList<ProcessControlBlock> everything = new LinkedList<ProcessControlBlock>();
+        everything.addAll(readyQueue);
+        everything.addAll(waitQueue);
+        return everything.iterator();
     }
 }
