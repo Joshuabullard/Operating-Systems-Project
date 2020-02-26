@@ -48,7 +48,7 @@ public class ProcessControlBlock {
             duration -= currentBurstDuration;
             currentBurstDuration = ioBurstTime;
             state = WAITING;
-            ioRequestTime = clock;
+            ioRequestTime = clock + usedTime - 1;
             System.out.println(pid + " remaining duration: " + duration);
             return usedTime;
         } else {
@@ -86,6 +86,6 @@ public class ProcessControlBlock {
 
     public String toString() {
         return "{" + pid + ", " + state + ", " + duration + ", " + cpuBurstTime +
-                    ", " + ioBurstTime + ", " + currentBurstDuration + "}";
+                ", " + ioBurstTime + ", " + currentBurstDuration + "}";
     }
 }
