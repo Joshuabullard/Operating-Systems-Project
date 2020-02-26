@@ -19,6 +19,7 @@ public class RoundRobin extends Scheduler {
         this.quantum = quantum;
     }
 
+
     @Override
     public void add(ProcessControlBlock pcb) {
         if(pcb.state().equals(ProcessControlBlock.READY)) readyQueue.add(pcb);
@@ -43,16 +44,21 @@ public class RoundRobin extends Scheduler {
     @Override
     public boolean isEmpty() {return readyQueue.isEmpty() && waitQueue.isEmpty();}
 
+
+    /*
+        Round Robin execution.
+        A process will run based on a specified quantum then be inserted into the correct queue.
+        - If a process has a duration <= the quantum, it will execute for the remaning duration then be placed
+          in the terminated queue.
+        - If a process has a duration > the quantum, it will execute for the specified quantum then be placed
+          in the wating queue.
+     */
     @Override
     public void execute(ProcessControlBlock pcb) {
+
         if(pcb.state().equals(ProcessControlBlock.READY)) {
             pcb.execute(quantum, clock);
-
-
-            if(pcb.state().equals(ProcessControlBlock.READY)) {
-                pcb.state().equals(ProcessControlBlock.WAITING); //Move process to WAITING to process next in READY
-                tick();
-            }
+            tick();  //update clock
         }
     }
 

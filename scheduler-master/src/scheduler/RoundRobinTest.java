@@ -4,9 +4,9 @@ package scheduler;
 public class RoundRobinTest {
 
     public static void main(String[] args) {
-        ProcessControlBlock a = new ProcessControlBlock(20, 20, 0);
-        ProcessControlBlock b = new ProcessControlBlock(10, 20, 0);
-        ProcessControlBlock c = new ProcessControlBlock(30, 20, 0);
+        ProcessControlBlock a = new ProcessControlBlock(5, 5, 3);
+        ProcessControlBlock b = new ProcessControlBlock(20, 20, 1);
+        ProcessControlBlock c = new ProcessControlBlock(50, 50, 0);
 
         RoundRobin sched = new RoundRobin(0, 4);
         sched.add(a);
