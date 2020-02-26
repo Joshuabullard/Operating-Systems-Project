@@ -36,27 +36,28 @@ public class ProcessControlBlock {
     }
 
     public int execute(int quantum, int clock) {
+        System.out.println("PROCESSING " + pid + " @ " + clock);
         if(quantum < currentBurstDuration) {
-            System.out.println(pid + " will use entire quantum.");
+            //System.out.println(pid + " will use entire quantum.");
             currentBurstDuration -= quantum;
             duration -= quantum;
-            System.out.println(pid + " remaining duration: " + duration);
+            //System.out.println(pid + " remaining duration: " + duration);
             return quantum;
         } else if(currentBurstDuration < duration){
-            System.out.println(pid + " will complete CPU burst.");
+            //System.out.println(pid + " will complete CPU burst.");
             int usedTime = currentBurstDuration;
             duration -= currentBurstDuration;
             currentBurstDuration = ioBurstTime;
             state = WAITING;
             ioRequestTime = clock + usedTime - 1;
-            System.out.println(pid + " remaining duration: " + duration);
+            //System.out.println(pid + " remaining duration: " + duration);
             return usedTime;
         } else {
-            System.out.println(pid + " will terminate.");
+            //System.out.println(pid + " will terminate.");
             int usedTime = duration;
             duration = 0;
             state = TERMINATED;
-            System.out.println(pid + " remaining duration: " + duration);
+            //System.out.println(pid + " remaining duration: " + duration);
             return usedTime;
         }
     }

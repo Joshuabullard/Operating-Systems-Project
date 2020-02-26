@@ -51,15 +51,19 @@ public class RoundRobin extends Scheduler {
         - If a process has a duration <= the quantum, it will execute for the remaning duration then be placed
           in the terminated queue.
         - If a process has a duration > the quantum, it will execute for the specified quantum then be placed
-          in the wating queue.
+          in the waiting queue.
      */
     @Override
     public void execute(ProcessControlBlock pcb) {
-
-        if(pcb.state().equals(ProcessControlBlock.READY)) {
-            pcb.execute(quantum, clock);
-            tick();  //update clock
+        int startTime = clock;      //Current process start time
+        for(int i=0; i<quantum; i++) {
+            if (pcb.state().equals(ProcessControlBlock.READY)) {
+                pcb.execute(1, clock);
+                tick();  //update clock
+            }
         }
+        int finTime = clock;        //Current process end time
+        System.out.println("Process " + pcb.pid() + " has run from " + startTime + " to " + finTime);
     }
 
     @Override

@@ -32,7 +32,7 @@ public abstract class Scheduler implements Iterable<ProcessControlBlock> {
                 tick();
                 continue;
             }
-            System.out.println(pcb + "@" + clock);
+            //System.out.println(pcb + "@" + clock);
             execute(pcb);
             add(pcb);
         }
