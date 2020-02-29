@@ -8,9 +8,9 @@ public class RoundRobin extends Scheduler {
     private LinkedList<ProcessControlBlock> readyQueue;
     private LinkedList<ProcessControlBlock> waitQueue;
     private LinkedList<ProcessControlBlock> terminated;
-    private int quantum;                //How long before the next context switch
+    private int quantum;
     private int totalWaitTime = 0;
-    private int cpuIdleTime = 0;
+    private int cpuIdleTime = 0;        //How long the CPU is idle waiting for a process
 
 
     //default constructor
@@ -29,8 +29,24 @@ public class RoundRobin extends Scheduler {
         else if(pcb.state().equals(ProcessControlBlock.WAITING)) waitQueue.add(pcb);
         else if(pcb.state().equals(ProcessControlBlock.TERMINATED)) terminated.add(pcb);
         else throw new RuntimeException("Process " + pcb.pid() + " in illegal state: " + pcb.state());
-    }
 
+        //print results to screen when all processes are complete:
+        if(isEmpty()){
+            int avgWaitTime = totalWaitTime / terminated.size();
+            int procRunning = (clock-1) - cpuIdleTime;
+            float cpuUtil = ((float)procRunning / ((float)clock-1)) *(float)100;
+
+            System.out.println("\n====================================");
+            System.out.println("ROUND ROBIN...");
+            System.out.print("The average wait time was: ");
+            System.out.print(avgWaitTime);
+
+            System.out.print("\nThe CPU utilization was: ");
+            System.out.printf("%.2f", cpuUtil);
+            System.out.print("%");
+            System.out.println("\n====================================");
+        }
+    }
 
     @Override
     public ProcessControlBlock next() {
@@ -39,7 +55,12 @@ public class RoundRobin extends Scheduler {
                 readyQueue.add(pcb);
                 waitQueue.remove(pcb);
             }
+
+            if(readyQueue.isEmpty()){
+                cpuIdleTime++;          //CPU is idle waiting for a process
+            }
         }
+
         if(! readyQueue.isEmpty()) return readyQueue.remove();
         return null;
     }
@@ -58,26 +79,20 @@ public class RoundRobin extends Scheduler {
      */
     @Override
     public void execute(ProcessControlBlock pcb) {
-        if (readyQueue.isEmpty() && !waitQueue.isEmpty()){
-            cpuIdleTime++;
-        }
-
         int startTime = clock;      //Current process start time
         for(int i=0; i<quantum; i++) {
             if (pcb.state().equals(ProcessControlBlock.READY)) {
                 pcb.execute(1, clock);
 
                 if(!readyQueue.isEmpty()) {
-                    totalWaitTime++;        //Process is waiting on the Ready queue
+                    totalWaitTime++;
                 }
 
                 tick();  //update clock
             }
         }
-        int finTime = clock;        //Current process end time
+        int finTime = clock-1;        //Current process end time
         System.out.println("Process " + pcb.pid() + " has run from " + startTime + " to " + finTime);
-        System.out.println(totalWaitTime);
-        System.out.print(cpuIdleTime);
     }
 
     @Override

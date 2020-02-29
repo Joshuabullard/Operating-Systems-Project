@@ -11,7 +11,7 @@ public class RoundRobinTest {
         RoundRobin sched = new RoundRobin(0, 4);
         sched.add(a);
         sched.add(b);
-        //sched.add(c);
+        sched.add(c);
         sched.execute();
     }
 }
