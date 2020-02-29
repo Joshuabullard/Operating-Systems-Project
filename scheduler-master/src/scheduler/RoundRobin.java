@@ -85,7 +85,8 @@ public class RoundRobin extends Scheduler {
                 pcb.execute(1, clock);
 
                 if(!readyQueue.isEmpty()) {
-                    totalWaitTime++;
+                    int waitingProc = readyQueue.size();
+                    totalWaitTime += waitingProc;         //Processes waiting on the Ready queue
                 }
 
                 tick();  //update clock
