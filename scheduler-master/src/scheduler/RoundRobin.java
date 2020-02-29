@@ -9,7 +9,7 @@ public class RoundRobin extends Scheduler {
     private LinkedList<ProcessControlBlock> waitQueue;
     private LinkedList<ProcessControlBlock> terminated;
     private int quantum;
-    private int totalWaitTime = 0;
+    private int totalWaitTime = 0;      //Total time of all process spent waiting on READY queue
     private int cpuIdleTime = 0;        //How long the CPU is idle waiting for a process
 
 

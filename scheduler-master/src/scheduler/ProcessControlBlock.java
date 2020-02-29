@@ -11,6 +11,7 @@ public class ProcessControlBlock {
     private String state; //the current state of the process.
     private int pid;  //the pid of the process.
     private int ioRequestTime; //the moment in time when an I/O request is made.
+    private String level;      //MLFQ: determine what priority queue level
 
     private static int pidSource = 2;
 
@@ -19,6 +20,11 @@ public class ProcessControlBlock {
     public static final String WAITING = "WAITING";
     public static final String TERMINATED = "TERMINATED";
     public static final String RUNNING = "RUNNING";
+
+    public static final String LOW = "LOW";
+    public static final String MIDDLE = "MIDDLE";
+    public static final String HIGH = "HIGH";
+
 
     /**
      * Creates a new ProcessControlBlock with the following info:
@@ -33,6 +39,7 @@ public class ProcessControlBlock {
         this.currentBurstDuration = cpuBurstTime;
         state = READY;
         pid = pidSource++;
+        level = LOW;
     }
 
     public int execute(int quantum, int clock) {
@@ -75,6 +82,11 @@ public class ProcessControlBlock {
 
     public String state()   {  return state;  }
 
+    public String level()   {  return level;  }
+
+    public void chLevel(String x){
+        level = x;
+    }
 
     public int pid()     {  return pid;    }
 
