@@ -37,6 +37,23 @@ public class MultiLevelFeedbackQueue extends Scheduler{
         else if(pcb.state().equals(ProcessControlBlock.WAITING)) waitQueue.add(pcb);
         else if(pcb.state().equals(ProcessControlBlock.TERMINATED)) terminated.add(pcb);
         else throw new RuntimeException("Process " + pcb.pid() + " in illegal state: " + pcb.state());
+
+        //print results to screen when all processes are complete:
+        if(isEmpty()){
+            int avgWaitTime = totalWaitTime / terminated.size();
+            int procRunning = (clock-1) - cpuIdleTime;
+            float cpuUtil = ((float)procRunning / ((float)clock-1)) *(float)100;
+
+            System.out.println("\n====================================");
+            System.out.println("MULTI-LEVEL FEEDBACK QUEUE...");
+            System.out.print("The average wait time was: ");
+            System.out.print(avgWaitTime);
+
+            System.out.print("\nThe CPU utilization was: ");
+            System.out.printf("%.2f", cpuUtil);
+            System.out.print("%");
+            System.out.println("\n====================================");
+        }
     }
 
     @Override
@@ -68,6 +85,12 @@ public class MultiLevelFeedbackQueue extends Scheduler{
     public boolean isEmpty() {return readyQueueLow.isEmpty() && readyQueueMid.isEmpty() &&
                                      readyQueueHigh.isEmpty() && waitQueue.isEmpty();}
 
+    /*
+        Multi-level feedback queue execution.
+        3 levels of READY queues, LOW, MIDDLE, and HIGH. All processes will start on the LOW ready queue and given a
+        quantum specified by the user. If the process uses the entire quantum and has not terminated then it will be
+        moved up one level. MIDDLE queue is given quantum ^2 and HIGH queue given quantum ^3.
+    */
     @Override
     public void execute(ProcessControlBlock pcb) {
         int startTime = clock;      //Current process start time
@@ -96,10 +119,7 @@ public class MultiLevelFeedbackQueue extends Scheduler{
         System.out.println("Process " + pcb.pid() + " has run from " + startTime + " to " + finTime + " on " + pcb.level() + " Queue");
 
         //Update Priority level
-        if(pcb.level().equals(ProcessControlBlock.MIDDLE))
-            pcb.chLevel(ProcessControlBlock.HIGH);
-        else if(pcb.level().equals(ProcessControlBlock.LOW))
-            pcb.chLevel(ProcessControlBlock.MIDDLE);
+        pcb.chLevel();
     }
 
     @Override

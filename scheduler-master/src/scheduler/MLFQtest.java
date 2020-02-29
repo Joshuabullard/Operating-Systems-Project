@@ -4,9 +4,9 @@ package scheduler;
 public class MLFQtest {
 
     public static void main(String[] args) {
-        ProcessControlBlock a = new ProcessControlBlock(20, 20, 0);
-        ProcessControlBlock b = new ProcessControlBlock(10, 10, 0);
-        ProcessControlBlock c = new ProcessControlBlock(30, 30, 10);
+        ProcessControlBlock a = new ProcessControlBlock(20, 5, 3);
+        ProcessControlBlock b = new ProcessControlBlock(20, 10, 1);
+        ProcessControlBlock c = new ProcessControlBlock(10, 10, 0);
 
         MultiLevelFeedbackQueue sched = new MultiLevelFeedbackQueue(0, 2);
         sched.add(a);

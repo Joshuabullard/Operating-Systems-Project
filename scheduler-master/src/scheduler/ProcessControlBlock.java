@@ -79,13 +79,15 @@ public class ProcessControlBlock {
         }
     }
 
-
     public String state()   {  return state;  }
 
     public String level()   {  return level;  }
 
-    public void chLevel(String x){
-        level = x;
+    public void chLevel(){
+        if(level.equals(MIDDLE))
+            level = HIGH;
+        else if(level.equals(LOW))
+            level = MIDDLE;
     }
 
     public int pid()     {  return pid;    }
